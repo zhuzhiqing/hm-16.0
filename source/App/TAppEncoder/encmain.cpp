@@ -1,4 +1,4 @@
-/* The copyright in this software is being made available under the BSD
+﻿/* The copyright in this software is being made available under the BSD
  * License, included below. This software may be subject to other third party
  * and contributor rights, including patent rights, and no such rights are
  * granted under this license.
@@ -95,7 +95,7 @@ int main(int argc, char* argv[])
   clock_t lBefore = clock();
 
   // call encoding function
-  cTAppEncTop.encode();
+  cTAppEncTop.encode();				//编码主函数
 
   // ending time
   dResult = (Double)(clock()-lBefore) / CLOCKS_PER_SEC;

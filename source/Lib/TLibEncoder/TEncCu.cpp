@@ -1,4 +1,4 @@
-/* The copyright in this software is being made available under the BSD
+﻿/* The copyright in this software is being made available under the BSD
  * License, included below. This software may be subject to other third party
  * and contributor rights, including patent rights, and no such rights are
  * granted under this license.
@@ -365,11 +365,12 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
 Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt uiDepth )
 #endif
 {
-  TComPic* pcPic = rpcBestCU->getPic();
+  TComPic* pcPic = rpcBestCU->getPic();				//获得图片信息
   DEBUG_STRING_NEW(sDebug)
 
   // get Original YUV data from picture
   m_ppcOrigYuv[uiDepth]->copyFromPicYuv( pcPic->getPicYuvOrg(), rpcBestCU->getAddr(), rpcBestCU->getZorderIdxInCU() );
+  //getZorderIdxInCU():CU的Z扫描绝对地址；getAddr()：LCU在slice中的地址；getPicYuvOrg()：获取输入YUV的纹理信息
 
     // variable for Early CU determination
   Bool    bSubBranch = true;
@@ -389,7 +390,7 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
   Int iMaxQP;
   Bool isAddLowestQP = false;
 
-  const UInt numberValidComponents = rpcBestCU->getPic()->getNumberValidComponents();
+  const UInt numberValidComponents = rpcBestCU->getPic()->getNumberValidComponents();			//获取当前CU的颜色分量通道数，一般为3
 
   if( (g_uiMaxCUWidth>>uiDepth) >= rpcTempCU->getSlice()->getPPS()->getMinCuDQPSize() )
   {
@@ -452,6 +453,7 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
         m_ChromaQpAdjIdc = ((uiLPelX >> lgMinCuSize) + (uiTPelY >> lgMinCuSize)) % (pcSlice->getPPS()->getChromaQpAdjTableSize() + 1);
       }
 
+	  //初始化估计数据（帧间帧内）
       rpcTempCU->initEstData( uiDepth, iQP, bIsLosslessMode );
 
       // do inter modes, SKIP and 2Nx2N
@@ -1384,19 +1386,20 @@ Void TEncCu::xCheckRDCostInter( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, 
 {
   DEBUG_STRING_NEW(sTest)
 
-  UChar uhDepth = rpcTempCU->getDepth( 0 );
+  UChar uhDepth = rpcTempCU->getDepth( 0 );				//当前CU的深度
 
-  rpcTempCU->setDepthSubParts( uhDepth, 0 );
+  rpcTempCU->setDepthSubParts( uhDepth, 0 );			//为当前CU下的每个基本块(4*4)的深度信息设置为uhDepth
 
-  rpcTempCU->setSkipFlagSubParts( false, 0, uhDepth );
+  rpcTempCU->setSkipFlagSubParts( false, 0, uhDepth );	//？为CU中的每一个4*4单元初始化Skip_flag为false
 
-  rpcTempCU->setPartSizeSubParts  ( ePartSize,  0, uhDepth );
-  rpcTempCU->setPredModeSubParts  ( MODE_INTER, 0, uhDepth );
+  rpcTempCU->setPartSizeSubParts  ( ePartSize,  0, uhDepth );	//？为CU中的每一个4*4单元设置分割类型为ePartSize
+  rpcTempCU->setPredModeSubParts  ( MODE_INTER, 0, uhDepth );	//？为CU中的每一个4*4单元设置预测模式为MODE_INTER
   rpcTempCU->setChromaQpAdjSubParts( rpcTempCU->getCUTransquantBypass(0) ? 0 : m_ChromaQpAdjIdc, 0, uhDepth );
 
 #if AMP_MRG
-  rpcTempCU->setMergeAMP (true);
+  rpcTempCU->setMergeAMP (true);						//设置使用merge的AMP（m_bIsMergeAMP=true）
   m_pcPredSearch->predInterSearch ( rpcTempCU, m_ppcOrigYuv[uhDepth], m_ppcPredYuvTemp[uhDepth], m_ppcResiYuvTemp[uhDepth], m_ppcRecoYuvTemp[uhDepth] DEBUG_STRING_PASS_INTO(sTest), false, bUseMRG );
+														//在该函数中得到当前分割模式下的最优预测方式。
 #else
   m_pcPredSearch->predInterSearch ( rpcTempCU, m_ppcOrigYuv[uhDepth], m_ppcPredYuvTemp[uhDepth], m_ppcResiYuvTemp[uhDepth], m_ppcRecoYuvTemp[uhDepth] );
 #endif

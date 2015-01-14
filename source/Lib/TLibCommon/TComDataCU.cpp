@@ -1,4 +1,4 @@
-/* The copyright in this software is being made available under the BSD
+﻿/* The copyright in this software is being made available under the BSD
  * License, included below. This software may be subject to other third party
  * and contributor rights, including patent rights, and no such rights are
  * granted under this license.
@@ -535,26 +535,27 @@ Void TComDataCU::initCU( TComPic* pcPic, UInt iCUAddr )
 *- set CU width and CU height according to depth
 *- set qp value according to input qp
 *- set last-coded qp value according to input last-coded qp
+*关于此函数的介绍 http://blog.csdn.net/tianzhaixing2013/article/details/8773188
 */
 Void TComDataCU::initEstData( const UInt uiDepth, const Int qp, const Bool bTransquantBypass )
 {
-  m_dTotalCost         = MAX_DOUBLE;
-  m_uiTotalDistortion  = 0;
-  m_uiTotalBits        = 0;
-  m_uiTotalBins        = 0;
+  m_dTotalCost         = MAX_DOUBLE;			//总的分割代价
+  m_uiTotalDistortion  = 0;						//总的分割的失真
+  m_uiTotalBits        = 0;						//编码后的比特数
+  m_uiTotalBins        = 0;						//句法元素的二进制位数
 
-  UChar uhWidth  = g_uiMaxCUWidth  >> uiDepth;
-  UChar uhHeight = g_uiMaxCUHeight >> uiDepth;
+  UChar uhWidth  = g_uiMaxCUWidth  >> uiDepth;		//当前CU的宽度
+  UChar uhHeight = g_uiMaxCUHeight >> uiDepth;		//当前CU的高度
 
-  for (UInt ui = 0; ui < m_uiNumPartition; ui++)
+  for (UInt ui = 0; ui < m_uiNumPartition; ui++)	//遍历当前CU下的4*4 TU单元
   {
     if(getPic()->getPicSym()->getInverseCUOrderMap(getAddr())*m_pcPic->getNumPartInCU()+m_uiAbsIdxInLCU+ui >= getSlice()->getSliceSegmentCurStartCUAddr())
     {
-      for(UInt i=0; i<NUM_REF_PIC_LIST_01; i++)
+      for(UInt i=0; i<NUM_REF_PIC_LIST_01; i++)			//？？？
       {
-        const RefPicList rpl=RefPicList(i);
-        m_apiMVPIdx[rpl][ui]  = -1;
-        m_apiMVPNum[rpl][ui]  = -1;
+        const RefPicList rpl=RefPicList(i);				
+        m_apiMVPIdx[rpl][ui]  = -1;					//候选预测运动矢量
+        m_apiMVPNum[rpl][ui]  = -1;					//单向预测和双向预测
       }
       m_puhDepth  [ui]    = uiDepth;
       m_puhWidth  [ui]    = uhWidth;
@@ -566,9 +567,9 @@ Void TComDataCU::initEstData( const UInt uiDepth, const Int qp, const Bool bTran
         m_puhTransformSkip             [comp][ui] = 0;
         m_explicitRdpcmMode            [comp][ui] = NUMBER_OF_RDPCM_MODES;
       }
-      m_skipFlag[ui]      = false;
-      m_pePartSize[ui]    = NUMBER_OF_PART_SIZES;
-      m_pePredMode[ui]    = NUMBER_OF_PREDICTION_MODES;
+      m_skipFlag[ui]      = false;								//skip flag
+      m_pePartSize[ui]    = NUMBER_OF_PART_SIZES;				//分割模式
+      m_pePredMode[ui]    = NUMBER_OF_PREDICTION_MODES;			//帧间或帧内模式
       m_CUTransquantBypass[ui] = bTransquantBypass;
       m_pbIPCMFlag[ui]    = 0;
       m_phQP[ui]          = qp;

@@ -1,4 +1,4 @@
-/* The copyright in this software is being made available under the BSD
+﻿/* The copyright in this software is being made available under the BSD
  * License, included below. This software may be subject to other third party
  * and contributor rights, including patent rights, and no such rights are
  * granted under this license.
@@ -445,7 +445,7 @@ Void TAppEncTop::encode()
   TComPicYuv cPicYuvTrueOrg;
 
   // allocate original YUV buffer
-  if( m_isField )
+  if( m_isField )		//m_isFiled为0和1表示用帧编码方式还是场编码方式
   {
     pcPicYuvOrg->create( m_iSourceWidth, m_iSourceHeightOrg, m_chromaFormatIDC, m_uiMaxCUWidth, m_uiMaxCUHeight, m_uiMaxCUDepth );
   cPicYuvTrueOrg.create(m_iSourceWidth, m_iSourceHeightOrg, m_chromaFormatIDC, m_uiMaxCUWidth, m_uiMaxCUHeight, m_uiMaxCUDepth);
@@ -456,12 +456,12 @@ Void TAppEncTop::encode()
   cPicYuvTrueOrg.create(m_iSourceWidth, m_iSourceHeight, m_chromaFormatIDC, m_uiMaxCUWidth, m_uiMaxCUHeight, m_uiMaxCUDepth);
   }
 
-  while ( !bEos )
+  while ( !bEos )	//编码结束时
   {
     // get buffers
-    xGetBuffer(pcPicYuvRec);
+    xGetBuffer(pcPicYuvRec);		//获取重建图像缓存
 
-    // read input YUV file
+    // read input YUV file			//读入输入的yuv文件
     m_cTVideoIOYuvInputFile.read( pcPicYuvOrg, &cPicYuvTrueOrg, ipCSC, m_aiPad, m_InputChromaFormatIDC );
 
     // increase number of received frames
@@ -480,18 +480,22 @@ Void TAppEncTop::encode()
     }
 
     // call encoding function for one frame
-    if ( m_isField ) m_cTEncTop.encode( bEos, flush ? 0 : pcPicYuvOrg, flush ? 0 : &cPicYuvTrueOrg, snrCSC, m_cListPicYuvRec, outputAccessUnits, iNumEncoded, m_isTopFieldFirst );
-    else             m_cTEncTop.encode( bEos, flush ? 0 : pcPicYuvOrg, flush ? 0 : &cPicYuvTrueOrg, snrCSC, m_cListPicYuvRec, outputAccessUnits, iNumEncoded );
+    if ( m_isField )
+		//进行场编码方式
+		m_cTEncTop.encode( bEos, flush ? 0 : pcPicYuvOrg, flush ? 0 : &cPicYuvTrueOrg, snrCSC, m_cListPicYuvRec, outputAccessUnits, iNumEncoded, m_isTopFieldFirst );
+    else
+		//进行帧编码方式
+		m_cTEncTop.encode( bEos, flush ? 0 : pcPicYuvOrg, flush ? 0 : &cPicYuvTrueOrg, snrCSC, m_cListPicYuvRec, outputAccessUnits, iNumEncoded );
 
     // write bistream to file if necessary
-    if ( iNumEncoded > 0 )
+    if ( iNumEncoded > 0 )					//iNumEncoded为已编码的帧数
     {
       xWriteOutput(bitstreamFile, iNumEncoded, outputAccessUnits);
       outputAccessUnits.clear();
     }
   }
 
-  m_cTEncTop.printSummary(m_isField);
+  m_cTEncTop.printSummary(m_isField);		//打印输出总结信息：码率，PSNR值
 
   // delete original YUV buffer
   pcPicYuvOrg->destroy();
@@ -506,7 +510,7 @@ Void TAppEncTop::encode()
   xDeleteBuffer();
   xDestroyLib();
 
-  printRateSummary();
+  printRateSummary();				//打印输出写入文件的比特数
 
   return;
 }

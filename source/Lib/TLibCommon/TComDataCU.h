@@ -1,4 +1,4 @@
-/* The copyright in this software is being made available under the BSD
+﻿/* The copyright in this software is being made available under the BSD
  * License, included below. This software may be subject to other third party
  * and contributor rights, including patent rights, and no such rights are
  * granted under this license.
@@ -147,10 +147,10 @@ private:
   // -------------------------------------------------------------------------------------------------------------------
 
   Bool          m_bDecSubCu;          ///< indicates decoder-mode
-  Double        m_dTotalCost;         ///< sum of partition RD costs
-  Distortion    m_uiTotalDistortion;  ///< sum of partition distortion
-  UInt          m_uiTotalBits;        ///< sum of partition bits
-  UInt          m_uiTotalBins;        ///< sum of partition bins
+  Double        m_dTotalCost;         ///< sum of partition RD costs	//总的分割代价
+  Distortion    m_uiTotalDistortion;  ///< sum of partition distortion	//总的分割失真
+  UInt          m_uiTotalBits;        ///< sum of partition bits		//编码后的比特数
+  UInt          m_uiTotalBins;        ///< sum of partition bins		//句法元素的二进制位数
   UInt*         m_sliceStartCU;       ///< Start CU address of current slice
   UInt*         m_sliceSegmentStartCU;///< Start CU address of current slice
   Char          m_codedQP;

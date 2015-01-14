@@ -1,4 +1,4 @@
-/* The copyright in this software is being made available under the BSD
+﻿/* The copyright in this software is being made available under the BSD
  * License, included below. This software may be subject to other third party
  * and contributor rights, including patent rights, and no such rights are
  * granted under this license.
@@ -72,7 +72,7 @@ private:
   static const UChar m_aucIntraFilter[MAX_NUM_CHANNEL_TYPE][MAX_INTRA_FILTER_DEPTHS];
 
 protected:
-  Pel*      m_piYuvExt[MAX_NUM_COMPONENT][NUM_PRED_BUF];
+  Pel*      m_piYuvExt[MAX_NUM_COMPONENT][NUM_PRED_BUF];   //m_piYuvExt指向的区域表示用于预测的未经滤波的样本值。
   Int       m_iYuvExtSize;
 
   TComYuv   m_acYuvPred[NUM_REF_PIC_LIST_01];

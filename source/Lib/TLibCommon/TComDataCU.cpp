@@ -549,11 +549,13 @@ Void TComDataCU::initEstData( const UInt uiDepth, const Int qp, const Bool bTran
 
   for (UInt ui = 0; ui < m_uiNumPartition; ui++)	//遍历当前CU下的4*4 TU单元
   {
+	  //----------------------------------------------------  ------------------------- --------------- -     ------------------------------------------
+	 //|                                                    | |                       | |             || |    |                                         |
     if(getPic()->getPicSym()->getInverseCUOrderMap(getAddr())*m_pcPic->getNumPartInCU()+m_uiAbsIdxInLCU+ui >= getSlice()->getSliceSegmentCurStartCUAddr())
     {
       for(UInt i=0; i<NUM_REF_PIC_LIST_01; i++)			//？？？
       {
-        const RefPicList rpl=RefPicList(i);				
+        const RefPicList rpl=RefPicList(i);			//参考帧列表	
         m_apiMVPIdx[rpl][ui]  = -1;					//候选预测运动矢量
         m_apiMVPNum[rpl][ui]  = -1;					//单向预测和双向预测
       }
